@@ -17,7 +17,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('SONAR_LOCAL') {
-                    bat "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=cf6826d57f1e453e08ecbd6cf862496472061f66 -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
+                    bat "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://localhost:9000 -Dsonar.login=18c2c90be0936a39ccc42506f9413133a0b74216 -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
                 }
             }
         }
@@ -37,7 +37,7 @@ pipeline {
         stage ('API Test') {
             steps {
                 dir('api-test') {
-                    git credentialsId: 'github_login', url: 'https://github.com/wcaquino/tasks-api-test'
+                    git credentialsId: 'github_login', url: 'https://github.com/ivancrp/tasks-api-test.git'
                     bat 'mvn test'
                 }
             }
@@ -45,7 +45,7 @@ pipeline {
         stage ('Deploy Frontend') {
             steps {
                 dir('frontend') {
-                    git credentialsId: 'github_login', url: 'https://github.com/wcaquino/tasks-frontend'
+                    git credentialsId: 'github_login', url: 'https://github.com/ivancrp/tasks-frontend.git'
                     bat 'mvn clean package'
                     deploy adapters: [tomcat8(credentialsId: 'TomcatLogin', path: '', url: 'http://localhost:8001/')], contextPath: 'tasks', war: 'target/tasks.war'
                 }
@@ -54,7 +54,7 @@ pipeline {
         stage ('Functional Test') {
             steps {
                 dir('functional-test') {
-                    git credentialsId: 'github_login', url: 'https://github.com/wcaquino/tasks-functional-tests'
+                    git credentialsId: 'github_login', url: 'https://github.com/ivancrp/tasks-functional-tests.git'
                     bat 'mvn test'
                 }
             }
@@ -80,10 +80,10 @@ pipeline {
             archiveArtifacts artifacts: 'target/tasks-backend.war, frontend/target/tasks.war', onlyIfSuccessful: true
         }
         unsuccessful {
-            emailext attachLog: true, body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'wcaquino+jenkins@gmail.com'
+            emailext attachLog: true, body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'ivancrp70+jenkins@gmail.com'
         }
         fixed {
-            emailext attachLog: true, body: 'See the attached log below', subject: 'Build is fine!!!', to: 'wcaquino+jenkins@gmail.com'
+            emailext attachLog: true, body: 'See the attached log below', subject: 'Build is fine!!!', to: 'ivancrp70+jenkins@gmail.com'
         }
     }
 }
