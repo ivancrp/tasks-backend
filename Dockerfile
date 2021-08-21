@@ -1,4 +1,4 @@
-FROM tomcat:8.5.50-jdk8-openjdk
+FROM tomcat:9.0.52-jdk8
 
 ARG WAR_FILE
 ARG CONTEXT
